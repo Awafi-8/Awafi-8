@@ -6,10 +6,6 @@
     <title>قناة عوافي - محتوى ثقافي وتربوي</title>
     <link rel="icon" type="image/x-icon" href="b0b1dd88-fa69-4fe5-8f37-ffe1c02df5aa.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chosen Palette: Serene Earth (Background: #f8f9fa, Accents: #4a90e2, #f5a623, #7ed321, Text: #333, #555) -->
-    <!-- Application Structure Plan: The application is designed as a single-page application (SPA) that simulates multi-page navigation. It has two main views: a 'Video List View' and a 'Video Detail View'. The Video List View (homepage) presents a grid of clickable video cards, each with a thumbnail and title. Clicking a card dynamically transitions the user to the Video Detail View, which is populated with the specific video's content (YouTube embed, description, and for the 'Six Hats' video, the full interactive experience from the previous prompt). A 'Back' button allows users to return to the Video List. This structure provides intuitive navigation and a focused content consumption experience, effectively organizing diverse video content within a single HTML file. For the Einstein content, a sub-interactive structure is used: clickable cards for each discovery, updating a central detail area, with a separate static section for challenges and lessons learned. For the Summer Vacation content, clickable cards represent key aspects of summer planning, updating a central detail area. -->
-    <!-- Visualization & Content Choices: Video thumbnails are presented as interactive cards (HTML/CSS) to encourage clicks. YouTube videos are embedded using iframes within the Video Detail View. For the 'Six Hats' video, its entire interactive component (HTML structure for hats, dynamic text updates via JS) is integrated directly into its dedicated detail section. For the Einstein content, clickable cards (HTML/CSS) represent each discovery, and a dynamic text area (HTML/JS) displays detailed explanations. For Summer Vacation, clickable cards (HTML/CSS) represent different summer activities/strategies, with dynamic text updates. Simple HTML/CSS is used for conceptual diagrams or visual hints where appropriate. All content updates and view transitions are handled by vanilla JavaScript, ensuring a lightweight and responsive experience. No Chart.js or Plotly.js are used in this iteration as the content does not require complex data visualization beyond the interactive hats or simple conceptual representations. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body {
@@ -20,10 +16,10 @@
         .container {
             max-width: 1200px;
         }
-        .video-card, .einstein-discovery-card, .summer-topic-card {
+        .video-card, .einstein-discovery-card, .summer-topic-card, .quiz-option-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .video-card:hover, .einstein-discovery-card:hover, .summer-topic-card:hover {
+        .video-card:hover, .einstein-discovery-card:hover, .summer-topic-card:hover, .quiz-option-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
@@ -72,15 +68,39 @@
             height: 100%;
             border: none;
         }
+        .quiz-option-card {
+            background-color: #f0f4f8; /* Light blue-gray for options */
+            cursor: pointer;
+            border: 2px solid transparent;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .quiz-option-card.selected {
+            border-color: #4a90e2; /* Blue border for selected */
+            background-color: #e0efff; /* Lighter blue for selected */
+        }
+        .quiz-option-card.correct {
+            background-color: #d4edda; /* Light green for correct */
+            border-color: #28a745; /* Green border */
+            color: #155724; /* Darker green text */
+        }
+        .quiz-option-card.incorrect {
+            background-color: #f8d7da; /* Light red for incorrect */
+            border-color: #dc3545; /* Red border */
+            color: #721c24; /* Darker red text */
+        }
+        .quiz-option-card.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- Header Section -->
     <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-6 shadow-lg rounded-b-lg">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-4xl font-extrabold tracking-tight">
-                <!-- Channel link in header -->
                 <a href="https://youtube.com/channel/UCPrugwZySCFSJavbJdLkLHg?si=6py7uce8wy3-zIJg" target="_blank" class="hover:text-blue-200 transition duration-300">قناة عوافي</a>
             </h1>
             <nav>
@@ -91,21 +111,17 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
     <main class="flex-grow container mx-auto p-8">
 
-        <!-- Video List View (Homepage) -->
         <section id="video-list-view" class="mb-12">
             <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">استكشف فيديوهاتنا التعليمية</h2>
             <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-8">
                 هنا تجدون مجموعة من الفيديوهات التعليمية والثقافية التي تقدمها قناة "عوافي". انقر على أي فيديو لمعرفة المزيد واستكشاف محتواه التفاعلي.
             </p>
             <div id="videos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Video cards will be dynamically inserted here -->
-            </div>
+                </div>
         </section>
 
-        <!-- Video Detail View (Initially Hidden) -->
         <section id="video-detail-view" class="hidden">
             <button id="backButton" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full mb-6 shadow-md transform hover:scale-105 transition duration-300 ease-in-out">
                 ← العودة للفيديوهات
@@ -113,19 +129,16 @@
             <div id="video-content-area" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
                 <h3 id="video-detail-title" class="text-3xl font-bold text-gray-800 mb-4 text-center"></h3>
                 <div id="video-embed-container" class="responsive-iframe-container mb-6">
-                    <!-- YouTube iframe will be inserted here -->
-                </div>
+                    </div>
                 <p id="video-detail-description" class="text-lg text-gray-700 leading-relaxed mb-6"></p>
 
-                <!-- Placeholder for specific interactive content (e.g., Six Hats) -->
                 <div id="hats-interactive-content" class="hidden">
                     <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">تطبيق قبعات التفكير الست التفاعلي</h4>
                     <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
                         هذا هو التطبيق التفاعلي لقبعات التفكير الست. اضغط على أي قبعة لاستكشاف طريقة التفكير التي تمثلها.
                     </p>
                     <div id="hats-selector-detail" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
-                        <!-- Hat icons will be generated by JS -->
-                    </div>
+                        </div>
                     <div id="hat-details-display">
                         <div id="hat-details-card-detail" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
                             <div id="initial-message-detail">
@@ -137,15 +150,13 @@
                     </div>
                 </div>
 
-                <!-- Einstein Interactive Content -->
                 <div id="einstein-interactive-content" class="hidden">
                     <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">اكتشافات آينشتاين</h4>
                     <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
                         استكشف أبرز نظريات واكتشافات ألبرت آينشتاين التي غيرت فهمنا للكون، بالإضافة إلى بعض التحديات التي واجهها.
                     </p>
                     <div id="einstein-discoveries-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <!-- Einstein discovery cards will be generated by JS -->
-                    </div>
+                        </div>
                     <div id="einstein-details-display">
                         <div id="einstein-details-card" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
                             <div id="einstein-initial-message">
@@ -156,7 +167,6 @@
                         </div>
                     </div>
 
-                    <!-- Einstein Challenges Section -->
                     <div class="bg-gray-100 p-6 rounded-xl shadow-md mt-12 text-center">
                         <h4 class="text-2xl font-bold text-gray-800 mb-4">التحديات والإخفاقات</h4>
                         <p class="text-gray-700 leading-relaxed mb-4">
@@ -168,15 +178,13 @@
                     </div>
                 </div>
 
-                <!-- Summer Vacation Interactive Content -->
                 <div id="summer-interactive-content" class="hidden">
                     <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">العطلة الصيفية: استثمر وقتك بذكاء</h4>
                     <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
                         بعد شهور من الدراسة، حان وقت العطلة الصيفية! لكن كيف نستثمرها صح؟ استكشف أهم النصائح لتجعل صيفك مليئاً بالمتعة والفائدة.
                     </p>
                     <div id="summer-topics-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <!-- Summer topic cards will be generated by JS -->
-                    </div>
+                        </div>
                     <div id="summer-details-display">
                         <div id="summer-details-card" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
                             <div id="summer-initial-message">
@@ -194,12 +202,38 @@
                         </p>
                     </div>
                 </div>
+
+                <div id="quiz-interactive-content" class="hidden">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">اختبر معلوماتك: الفرق بين الفترة والمدة</h4>
+                    <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
+                        بعد مشاهدة الفيديو، اختبر فهمك للفرق بين "الفترة" و"المدة" والألفاظ المرتبطة بهما.
+                    </p>
+                    <div id="quiz-area" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                        <div id="quiz-question-container" class="text-xl font-semibold text-gray-800 mb-6 text-center">
+                            </div>
+                        <div id="quiz-options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            </div>
+                        <div id="quiz-feedback-container" class="text-center text-lg font-bold mb-6 min-h-[30px]">
+                            </div>
+                        <div class="flex justify-center">
+                            <button id="quiz-next-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-md transform hover:scale-105 transition duration-300 ease-in-out hidden">
+                                السؤال التالي
+                            </button>
+                        </div>
+                        <div id="quiz-results-container" class="hidden text-center">
+                            <h5 class="text-2xl font-bold text-gray-800 mb-4">نتائج الاختبار</h5>
+                            <p id="quiz-score" class="text-xl text-gray-700 mb-4"></p>
+                            <button id="quiz-restart-button" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full shadow-md transform hover:scale-105 transition duration-300 ease-in-out">
+                                إعادة الاختبار
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer Section -->
     <footer class="bg-gray-800 text-white p-6 mt-12 rounded-t-lg">
         <div class="container mx-auto text-center text-sm">
             <p>© 2025 <a href="https://youtube.com/channel/UCPrugwZySCFSJavbJdLkLHg?si=6py7uce8wy3-zIJg" target="_blank" class="hover:text-gray-300 transition duration-300">قناة عوافي</a>. جميع الحقوق محفوظة.</p>
@@ -235,6 +269,14 @@
                 description: 'كيف تقضي عطلتك الصيفية بفعالية؟ اكتشف نصائح للراحة، تطوير الذات، والتحضير للعام القادم.',
                 youtubeId: 'InShot_20250628_144918648.mp4', // Placeholder, replace with actual YouTube ID if uploaded
                 interactive: true // This video will trigger the Summer interactive content
+            },
+            {
+                id: 'period-duration-quiz',
+                title: 'اختبار: الفترة والمدة في اللغة العربية',
+                thumbnail: '04c0e136-ef78-4993-be44-5f9c9eecf5fb.png', // يمكنك استبدالها بصورة مصغرة مناسبة
+                description: 'اختبر معلوماتك عن الفرق بين "الفترة" و"المدة" والألفاظ المرتبطة بهما بعد مشاهدة الفيديو التعليمي.',
+                youtubeId: 'https://youtu.be/6LIqotXDXN4?si=sBiswRXYuWOISk0G', // اسم الملف الذي حملته
+                interactive: true // هذا الفيديو سيشغل محتوى الاختبار التفاعلي
             }
         ];
 
@@ -331,6 +373,35 @@
             }
         };
 
+        const quizData = [
+            {
+                question: 'ما هو اللفظ الذي يشير إلى مدة طويلة من الزمن؟',
+                options: ['الهنيهة', 'الفترة', 'اللحظة', 'الحين'],
+                correctAnswer: 'الحين'
+            },
+            {
+                question: 'عندما نقول "درست لمدة ساعتين"، فعلى ماذا تدل كلمة "لمدة"؟',
+                options: ['بداية الزمن', 'نهاية الزمن', 'كمية الزمن المحسوبة', 'نوعية الزمن'],
+                correctAnswer: 'كمية الزمن المحسوبة'
+            },
+            {
+                question: 'أي من الكلمات التالية تعتبر مرادفاً لكلمة "الردح"؟',
+                options: ['البرهة', 'العصر', 'الدهر', 'كل ما سبق'],
+                correctAnswer: 'كل ما سبق'
+            },
+            {
+                question: 'ما هو اللفظ الذي يستخدم عادةً للتعبير عن جزء قصير جداً من الزمن؟',
+                options: ['الأوان', 'الفترة', 'اللحظة', 'الساعة'],
+                correctAnswer: 'اللحظة'
+            },
+            {
+                question: 'إذا قلت "مرت مدة طويلة على لقائنا الأخير"، فماذا يعني ذلك؟',
+                options: ['تحديد دقيق لكمية الزمن', 'الإشارة إلى زمن غير محدد بدقة', 'وصف سرعة مرور الزمن', 'التعبير عن حدث معين'],
+                correctAnswer: 'الإشارة إلى زمن غير محدد بدقة'
+            }
+        ];
+
+
         const videoListView = document.getElementById('video-list-view');
         const videoDetailView = document.getElementById('video-detail-view');
         const videosGrid = document.getElementById('videos-grid');
@@ -343,6 +414,20 @@
         const hatsInteractiveContent = document.getElementById('hats-interactive-content');
         const einsteinInteractiveContent = document.getElementById('einstein-interactive-content');
         const summerInteractiveContent = document.getElementById('summer-interactive-content');
+        const quizInteractiveContent = document.getElementById('quiz-interactive-content'); // New
+
+        // Quiz elements
+        const quizQuestionContainer = document.getElementById('quiz-question-container');
+        const quizOptionsContainer = document.getElementById('quiz-options-container');
+        const quizFeedbackContainer = document.getElementById('quiz-feedback-container');
+        const quizNextButton = document.getElementById('quiz-next-button');
+        const quizResultsContainer = document.getElementById('quiz-results-container');
+        const quizScore = document.getElementById('quiz-score');
+        const quizRestartButton = document.getElementById('quiz-restart-button');
+
+        let currentQuizQuestionIndex = 0;
+        let correctAnswersCount = 0;
+        let selectedQuizOption = null;
 
         function renderVideoList() {
             videosGrid.innerHTML = '';
@@ -379,7 +464,16 @@
             hatsInteractiveContent.classList.add('hidden');
             einsteinInteractiveContent.classList.add('hidden');
             summerInteractiveContent.classList.add('hidden');
-            videoEmbedContainer.classList.add('hidden'); // Hide embed by default
+            quizInteractiveContent.classList.add('hidden');
+            
+            // Always clear content and hide embed container initially
+            videoEmbedContainer.innerHTML = '';
+            videoEmbedContainer.classList.add('hidden');
+            // Reset videoEmbedContainer classes and styles to default for iframes
+            videoEmbedContainer.classList.add('responsive-iframe-container');
+            videoEmbedContainer.style.height = '';
+            videoEmbedContainer.style.paddingBottom = '56.25%';
+            videoEmbedContainer.classList.remove('flex', 'justify-center', 'items-center');
 
             if (video.interactive) {
                 if (video.id === 'six-hats') {
@@ -391,12 +485,25 @@
                 } else if (video.id === 'summer-vacation') {
                     summerInteractiveContent.classList.remove('hidden');
                     initializeSummerInteractive();
+                } else if (video.id === 'period-duration-quiz') {
+                    quizInteractiveContent.classList.remove('hidden');
+                    initializeQuizInteractive();
+
+                    // Special handling for the quiz video's YouTube button
+                    videoEmbedContainer.classList.remove('responsive-iframe-container'); // Remove iframe specific styling
+                    videoEmbedContainer.style.height = '150px'; // Give it a fixed height for the button
+                    videoEmbedContainer.style.paddingBottom = '0'; // Remove padding-bottom
+                    videoEmbedContainer.classList.add('flex', 'justify-center', 'items-center'); // Center the button
+
+                    videoEmbedContainer.innerHTML = `
+                        <a href="${video.youtubeId}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300 ease-in-out text-xl">
+                            شاهد الفيديو على يوتيوب
+                        </a>
+                    `;
+                    videoEmbedContainer.classList.remove('hidden');
                 }
-            } else if (video.youtubeId) {
-                // Only show embed if it's a non-interactive YouTube video
-                videoEmbedContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${video.youtubeId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>`;
-                videoEmbedContainer.classList.remove('hidden');
             }
+            // No else-if here. If it's not the quiz video, and not a standard YouTube embed, the container remains hidden.
         }
 
         function showHomeView() {
@@ -447,257 +554,227 @@
                         <p class="text-gray-500 mt-2">اضغط على أحد المواضيع في الأعلى لاستكشاف نصائح العطلة الصيفية.</p>
                     </div>
                 `;
-                document.querySelectorAll('.summer-topic-card').forEach(card => {
-                    card.classList.remove('active');
-                    card.style.borderColor = 'transparent';
-                });
             }
+            // Reset quiz state when returning to home view
+            currentQuizQuestionIndex = 0;
+            correctAnswersCount = 0;
+            selectedQuizOption = null;
+            quizNextButton.classList.add('hidden');
+            quizResultsContainer.classList.add('hidden');
         }
 
-        function initializeHatsInteractive() {
-            const selectorContainer = document.getElementById('hats-selector-detail');
-            const detailsCard = document.getElementById('hat-details-card-detail');
+        // Event Listeners
+        videosGrid.addEventListener('click', (event) => {
+            const videoCard = event.target.closest('.video-card');
+            if (videoCard) {
+                showVideoDetails(videoCard.dataset.videoId);
+            }
+        });
 
-            selectorContainer.innerHTML = ''; // Clear previous hats if re-initializing
+        backButton.addEventListener('click', showHomeView);
+        homeButton.addEventListener('click', showHomeView);
+
+        // Hats Interactive Logic
+        function initializeHatsInteractive() {
+            const hatsSelector = document.getElementById('hats-selector-detail');
+            const hatDetailsCard = document.getElementById('hat-details-card-detail');
+            hatsSelector.innerHTML = ''; // Clear previous content
 
             Object.keys(hatsInteractiveData).forEach(key => {
                 const hat = hatsInteractiveData[key];
-                const hatElement = document.createElement('div');
-                hatElement.className = `hat-icon cursor-pointer p-4 bg-white rounded-lg shadow-md hover:shadow-lg text-center`;
-                hatElement.dataset.hat = key;
-                hatElement.innerHTML = `
-                    <div class="hat-icon-shape" style="background-color: ${hat.color};"></div>
-                    <h3 class="text-lg font-bold ${hat.textColor === 'text-white' ? 'text-gray-800' : 'text-gray-800'}">${hat.name}</h3>
+                const hatIcon = document.createElement('div');
+                hatIcon.className = `hat-icon cursor-pointer p-4 rounded-xl shadow-md text-center flex flex-col items-center justify-center bg-white`;
+                hatIcon.dataset.hat = key;
+                hatIcon.innerHTML = `
+                    <div class="hat-icon-shape mb-2" style="background-color: ${hat.color};"></div>
+                    <p class="font-semibold text-gray-700">${hat.name}</p>
                 `;
-                selectorContainer.appendChild(hatElement);
+                hatsSelector.appendChild(hatIcon);
             });
-            
-            const oldListener = selectorContainer._eventListener;
-            if (oldListener) {
-                selectorContainer.removeEventListener('click', oldListener);
-            }
 
-            const newListener = function(e) {
-                const hatElement = e.target.closest('.hat-icon');
-                if (hatElement) {
-                    const hatKey = hatElement.dataset.hat;
-                    updateHatInfo(hatKey);
-
-                    document.querySelectorAll('#hats-selector-detail .hat-icon').forEach(icon => {
+            hatsSelector.addEventListener('click', (event) => {
+                const selectedHatIcon = event.target.closest('.hat-icon');
+                if (selectedHatIcon) {
+                    document.querySelectorAll('.hat-icon').forEach(icon => {
                         icon.classList.remove('active');
                         icon.style.borderColor = 'transparent';
                     });
-                    hatElement.classList.add('active');
-                    hatElement.style.borderColor = hatsInteractiveData[hatKey].color;
-                }
-            };
-            selectorContainer.addEventListener('click', newListener);
-            selectorContainer._eventListener = newListener;
+                    selectedHatIcon.classList.add('active');
+                    selectedHatIcon.style.borderColor = hatsInteractiveData[selectedHatIcon.dataset.hat].color;
 
-            function updateHatInfo(hatKey) {
-                const hat = hatsInteractiveData[hatKey];
-                
-                detailsCard.style.backgroundColor = hat.color;
-                detailsCard.style.opacity = '0';
-
-                setTimeout(() => {
-                    detailsCard.innerHTML = `
-                        <h3 class="text-3xl font-bold ${hat.textColor}">${hat.name}</h3>
-                        <p class="text-lg ${hat.textColor} opacity-80 mb-4">الشخصية: ${hat.character}</p>
-                        <p class="text-xl ${hat.textColor} max-w-xl mx-auto leading-relaxed mb-6">${hat.description}</p>
-                        <blockquote class="border-r-4 ${hat.textColor} border-opacity-50 pr-4 italic text-lg ${hat.textColor} opacity-90">
+                    const hat = hatsInteractiveData[selectedHatIcon.dataset.hat];
+                    hatDetailsCard.style.backgroundColor = hat.color;
+                    hatDetailsCard.innerHTML = `
+                        <h4 class="text-3xl font-bold ${hat.textColor} mb-4">${hat.name}</h4>
+                        <p class="text-xl font-semibold ${hat.textColor} mb-4">${hat.character}</p>
+                        <p class="text-lg ${hat.textColor} leading-relaxed mb-6">${hat.description}</p>
+                        <blockquote class="border-r-4 border-white pr-4 italic text-xl ${hat.textColor}">
                             "${hat.quote}"
                         </blockquote>
                     `;
-                    detailsCard.style.opacity = '1';
-                }, 250);
-            }
+                }
+            });
         }
 
+        // Einstein Interactive Logic
         function initializeEinsteinInteractive() {
-            const selectorContainer = document.getElementById('einstein-discoveries-selector');
-            const detailsCard = document.getElementById('einstein-details-card');
-
-            selectorContainer.innerHTML = ''; // Clear previous cards if re-initializing
+            const einsteinSelector = document.getElementById('einstein-discoveries-selector');
+            const einsteinDetailsCard = document.getElementById('einstein-details-card');
+            einsteinSelector.innerHTML = ''; // Clear previous content
 
             Object.keys(einsteinInteractiveData).forEach(key => {
                 const discovery = einsteinInteractiveData[key];
                 const discoveryCard = document.createElement('div');
-                discoveryCard.className = `einstein-discovery-card cursor-pointer p-4 bg-white rounded-lg shadow-md hover:shadow-lg text-center`;
+                discoveryCard.className = `einstein-discovery-card bg-white rounded-xl shadow-md p-6 text-center cursor-pointer`;
                 discoveryCard.dataset.discovery = key;
                 discoveryCard.innerHTML = `
-                    <div class="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center" style="background-color: ${discovery.color};">
-                        <span class="text-white text-3xl font-bold">${discovery.year.substring(2)}</span>
+                    <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-white" style="background-color: ${discovery.color};">
+                        ${discovery.year.substring(2)}
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">${discovery.title}</h3>
-                    <p class="text-gray-600 text-sm">${discovery.year}</p>
+                    <h5 class="text-xl font-semibold text-gray-800">${discovery.title}</h5>
                 `;
-                selectorContainer.appendChild(discoveryCard);
+                einsteinSelector.appendChild(discoveryCard);
             });
 
-            const oldListener = selectorContainer._einsteinEventListener;
-            if (oldListener) {
-                selectorContainer.removeEventListener('click', oldListener);
-            }
-
-            const newListener = function(e) {
-                const discoveryCard = e.target.closest('.einstein-discovery-card');
-                if (discoveryCard) {
-                    const discoveryKey = discoveryCard.dataset.discovery;
-                    updateEinsteinInfo(discoveryKey);
-
-                    document.querySelectorAll('#einstein-discoveries-selector .einstein-discovery-card').forEach(card => {
+            einsteinSelector.addEventListener('click', (event) => {
+                const selectedCard = event.target.closest('.einstein-discovery-card');
+                if (selectedCard) {
+                    document.querySelectorAll('.einstein-discovery-card').forEach(card => {
                         card.classList.remove('active');
                         card.style.borderColor = 'transparent';
                     });
-                    discoveryCard.classList.add('active');
-                    discoveryCard.style.borderColor = einsteinInteractiveData[discoveryKey].color;
-                }
-            };
-            selectorContainer.addEventListener('click', newListener);
-            selectorContainer._einsteinEventListener = newListener;
+                    selectedCard.classList.add('active');
+                    selectedCard.style.borderColor = einsteinInteractiveData[selectedCard.dataset.discovery].color;
 
-            function updateEinsteinInfo(discoveryKey) {
-                const discovery = einsteinInteractiveData[discoveryKey];
-                
-                detailsCard.style.backgroundColor = discovery.color;
-                detailsCard.style.opacity = '0';
-                detailsCard.style.color = 'white'; // Default text color for dark backgrounds
-
-                const hexToRgb = hex => {
-                    const r = parseInt(hex.slice(1, 3), 16);
-                    const g = parseInt(hex.slice(3, 5), 16);
-                    const b = parseInt(hex.slice(5, 7), 16);
-                    return { r, g, b };
-                };
-
-                const calculateLuminance = ({ r, g, b }) => {
-                    const a = [r, g, b].map(v => {
-                        v /= 255;
-                        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-                    });
-                    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-                };
-
-                const isLight = colorHex => {
-                    const luminance = calculateLuminance(hexToRgb(colorHex));
-                    return luminance > 0.5; // Threshold for light vs. dark
-                };
-
-                if (isLight(discovery.color)) {
-                    detailsCard.style.color = '#333'; // Dark text for light backgrounds
-                } else {
-                    detailsCard.style.color = 'white'; // Light text for dark backgrounds
-                }
-
-                setTimeout(() => {
-                    detailsCard.innerHTML = `
-                        <h3 class="text-3xl font-bold mb-2">${discovery.title}</h3>
-                        <p class="text-lg opacity-80 mb-4">${discovery.year}</p>
-                        <p class="text-xl max-w-xl mx-auto leading-relaxed">${discovery.description}</p>
+                    const discovery = einsteinInteractiveData[selectedCard.dataset.discovery];
+                    einsteinDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset background
+                    einsteinDetailsCard.innerHTML = `
+                        <h4 class="text-3xl font-bold text-gray-800 mb-4">${discovery.title} (${discovery.year})</h4>
+                        <p class="text-lg text-gray-700 leading-relaxed">${discovery.description}</p>
                     `;
-                    detailsCard.style.opacity = '1';
-                }, 250);
-            }
+                }
+            });
         }
 
+        // Summer Interactive Logic
         function initializeSummerInteractive() {
-            const selectorContainer = document.getElementById('summer-topics-selector');
-            const detailsCard = document.getElementById('summer-details-card');
-
-            selectorContainer.innerHTML = ''; // Clear previous cards if re-initializing
+            const summerSelector = document.getElementById('summer-topics-selector');
+            const summerDetailsCard = document.getElementById('summer-details-card');
+            summerSelector.innerHTML = ''; // Clear previous content
 
             Object.keys(summerInteractiveData).forEach(key => {
                 const topic = summerInteractiveData[key];
                 const topicCard = document.createElement('div');
-                topicCard.className = `summer-topic-card cursor-pointer p-4 bg-white rounded-lg shadow-md hover:shadow-lg text-center`;
+                topicCard.className = `summer-topic-card bg-white rounded-xl shadow-md p-6 text-center cursor-pointer`;
                 topicCard.dataset.topic = key;
                 topicCard.innerHTML = `
-                    <div class="text-5xl mb-3">${topic.icon}</div>
-                    <h3 class="text-lg font-bold text-gray-800">${topic.title}</h3>
+                    <div class="text-5xl mb-4">${topic.icon}</div>
+                    <h5 class="text-xl font-semibold text-gray-800">${topic.title}</h5>
                 `;
-                selectorContainer.appendChild(topicCard);
+                summerSelector.appendChild(topicCard);
             });
 
-            const oldListener = selectorContainer._summerEventListener;
-            if (oldListener) {
-                selectorContainer.removeEventListener('click', oldListener);
-            }
-
-            const newListener = function(e) {
-                const topicCard = e.target.closest('.summer-topic-card');
-                if (topicCard) {
-                    const topicKey = topicCard.dataset.topic;
-                    updateSummerInfo(topicKey);
-
-                    document.querySelectorAll('#summer-topics-selector .summer-topic-card').forEach(card => {
+            summerSelector.addEventListener('click', (event) => {
+                const selectedCard = event.target.closest('.summer-topic-card');
+                if (selectedCard) {
+                    document.querySelectorAll('.summer-topic-card').forEach(card => {
                         card.classList.remove('active');
                         card.style.borderColor = 'transparent';
                     });
-                    topicCard.classList.add('active');
-                    topicCard.style.borderColor = summerInteractiveData[topicKey].color;
-                }
-            };
-            selectorContainer.addEventListener('click', newListener);
-            selectorContainer._summerEventListener = newListener;
+                    selectedCard.classList.add('active');
+                    selectedCard.style.borderColor = summerInteractiveData[selectedCard.dataset.topic].color;
 
-            function updateSummerInfo(topicKey) {
-                const topic = summerInteractiveData[topicKey];
-                
-                detailsCard.style.backgroundColor = topic.color;
-                detailsCard.style.opacity = '0';
-                detailsCard.style.color = 'white'; // Default text color for dark backgrounds
-
-                const hexToRgb = hex => {
-                    const r = parseInt(hex.slice(1, 3), 16);
-                    const g = parseInt(hex.slice(3, 5), 16);
-                    const b = parseInt(hex.slice(5, 7), 16);
-                    return { r, g, b };
-                };
-
-                const calculateLuminance = ({ r, g, b }) => {
-                    const a = [r, g, b].map(v => {
-                        v /= 255;
-                        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-                    });
-                    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-                };
-
-                const isLight = colorHex => {
-                    const luminance = calculateLuminance(hexToRgb(colorHex));
-                    return luminance > 0.5; // Threshold for light vs. dark
-                };
-
-                if (isLight(topic.color)) {
-                    detailsCard.style.color = '#333'; // Dark text for light backgrounds
-                } else {
-                    detailsCard.style.color = 'white'; // Light text for dark backgrounds
-                }
-
-                setTimeout(() => {
-                    detailsCard.innerHTML = `
-                        <h3 class="text-3xl font-bold mb-2">${topic.title}</h3>
-                        <p class="text-xl max-w-xl mx-auto leading-relaxed">${topic.description}</p>
+                    const topic = summerInteractiveData[selectedCard.dataset.topic];
+                    summerDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset background
+                    summerDetailsCard.innerHTML = `
+                        <h4 class="text-3xl font-bold text-gray-800 mb-4">${topic.title}</h4>
+                        <p class="text-lg text-gray-700 leading-relaxed">${topic.description}</p>
                     `;
-                    detailsCard.style.opacity = '1';
-                }, 250);
+                }
+            });
+        }
+
+        // Quiz Interactive Logic
+        function initializeQuizInteractive() {
+            currentQuizQuestionIndex = 0;
+            correctAnswersCount = 0;
+            quizResultsContainer.classList.add('hidden');
+            quizNextButton.classList.add('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            if (currentQuizQuestionIndex < quizData.length) {
+                const question = quizData[currentQuizQuestionIndex];
+                quizQuestionContainer.textContent = `السؤال ${currentQuizQuestionIndex + 1}: ${question.question}`;
+                quizOptionsContainer.innerHTML = '';
+                quizFeedbackContainer.textContent = '';
+                quizNextButton.classList.add('hidden');
+                selectedQuizOption = null;
+
+                question.options.forEach(option => {
+                    const optionCard = document.createElement('div');
+                    optionCard.className = 'quiz-option-card';
+                    optionCard.textContent = option;
+                    optionCard.dataset.option = option;
+                    optionCard.addEventListener('click', handleOptionClick);
+                    quizOptionsContainer.appendChild(optionCard);
+                });
+            } else {
+                showQuizResults();
             }
         }
 
-        // Initial render and event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            renderVideoList();
+        function handleOptionClick(event) {
+            if (selectedQuizOption) return; // Prevent multiple selections
 
-            videosGrid.addEventListener('click', (e) => {
-                const card = e.target.closest('.video-card');
-                if (card && card.dataset.videoId) {
-                    showVideoDetails(card.dataset.videoId);
-                }
+            selectedQuizOption = event.target;
+            const selectedAnswer = selectedQuizOption.dataset.option;
+            const correctAnswer = quizData[currentQuizQuestionIndex].correctAnswer;
+
+            // Disable all options after selection
+            document.querySelectorAll('.quiz-option-card').forEach(card => {
+                card.classList.add('disabled');
             });
 
-            backButton.addEventListener('click', showHomeView);
-            homeButton.addEventListener('click', showHomeView);
+            if (selectedAnswer === correctAnswer) {
+                selectedQuizOption.classList.add('correct');
+                quizFeedbackContainer.textContent = 'إجابة صحيحة! 🎉';
+                quizFeedbackContainer.style.color = '#28a745'; // Green
+                correctAnswersCount++;
+            } else {
+                selectedQuizOption.classList.add('incorrect');
+                quizFeedbackContainer.textContent = 'إجابة خاطئة. 😔';
+                quizFeedbackContainer.style.color = '#dc3545'; // Red
+                // Highlight the correct answer
+                document.querySelectorAll('.quiz-option-card').forEach(card => {
+                    if (card.dataset.option === correctAnswer) {
+                        card.classList.add('correct');
+                    }
+                });
+            }
+            quizNextButton.classList.remove('hidden');
+        }
+
+        quizNextButton.addEventListener('click', () => {
+            currentQuizQuestionIndex++;
+            loadQuizQuestion();
         });
+
+        function showQuizResults() {
+            quizQuestionContainer.textContent = '';
+            quizOptionsContainer.innerHTML = '';
+            quizFeedbackContainer.textContent = '';
+            quizNextButton.classList.add('hidden');
+            quizResultsContainer.classList.remove('hidden');
+            quizScore.textContent = `لقد أجبت على ${correctAnswersCount} من أصل ${quizData.length} أسئلة بشكل صحيح.`;
+        }
+
+        quizRestartButton.addEventListener('click', initializeQuizInteractive);
+
+
+        // Initial render
+        renderVideoList();
     </script>
 </body>
 </html>
