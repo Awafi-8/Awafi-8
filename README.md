@@ -222,7 +222,7 @@
             {
                 id: 'physics-energy',
                 title: 'مقدمة في الفيزياء والطاقة',
-                thumbnail: 'https://placehold.co/480x270/ADD8E6/000000?text=الفيزياء+والطاقة',
+                thumbnail: 'c3dcbe0e-c1a8-4e2e-9965-ffea2bd24685.png',
                 description: 'تعرف على أساسيات الفيزياء والطاقة، بما في ذلك مفاهيم السرعة، الزمن، الضوء، والكهرباء بطريقة مبسطة وممتعة.',
                 youtubeId: 'AwafiTheMoon_997.mp4', // Placeholder, replace with actual YouTube ID if uploaded
                 interactive: true // This video will trigger the Einstein interactive content
@@ -230,7 +230,7 @@
             {
                 id: 'summer-vacation',
                 title: 'العطلة الصيفية: استثمر وقتك بذكاء',
-                thumbnail: 'https://placehold.co/480x270/FFD700/000000?text=العطلة+الصيفية', // Placeholder, replace with actual thumbnail if available
+                thumbnail: 'Gemini_Generated_Image_stpdiwstpdiwstpd.png', // Placeholder, replace with actual thumbnail if available
                 description: 'كيف تقضي عطلتك الصيفية بفعالية؟ اكتشف نصائح للراحة، تطوير الذات، والتحضير للعام القادم.',
                 youtubeId: 'InShot_20250628_144918648.mp4', // Placeholder, replace with actual YouTube ID if uploaded
                 interactive: true // This video will trigger the Summer interactive content
