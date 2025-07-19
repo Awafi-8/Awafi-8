@@ -1,16 +1,702 @@
-## Hi there 👋
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قناة عوافي - محتوى ثقافي وتربوي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Serene Earth (Background: #f8f9fa, Accents: #4a90e2, #f5a623, #7ed321, Text: #333, #555) -->
+    <!-- Application Structure Plan: The application is designed as a single-page application (SPA) that simulates multi-page navigation. It has two main views: a 'Video List View' and a 'Video Detail View'. The Video List View (homepage) presents a grid of clickable video cards, each with a thumbnail and title. Clicking a card dynamically transitions the user to the Video Detail View, which is populated with the specific video's content (YouTube embed, description, and for the 'Six Hats' video, the full interactive experience from the previous prompt). A 'Back' button allows users to return to the Video List. This structure provides intuitive navigation and a focused content consumption experience, effectively organizing diverse video content within a single HTML file. For the Einstein content, a sub-interactive structure is used: clickable cards for each discovery, updating a central detail area, with a separate static section for challenges and lessons learned. For the Summer Vacation content, clickable cards represent key aspects of summer planning, updating a central detail area. -->
+    <!-- Visualization & Content Choices: Video thumbnails are presented as interactive cards (HTML/CSS) to encourage clicks. YouTube videos are embedded using iframes within the Video Detail View. For the 'Six Hats' video, its entire interactive component (HTML structure for hats, dynamic text updates via JS) is integrated directly into its dedicated detail section. For the Einstein content, clickable cards (HTML/CSS) represent each discovery, and a dynamic text area (HTML/JS) displays detailed explanations. For Summer Vacation, clickable cards (HTML/CSS) represent different summer activities/strategies, with dynamic text updates. Simple HTML/CSS is used for conceptual diagrams or visual hints where appropriate. All content updates and view transitions are handled by vanilla JavaScript, ensuring a lightweight and responsive experience. No Chart.js or Plotly.js are used in this iteration as the content does not require complex data visualization beyond the interactive hats or simple conceptual representations. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .video-card, .einstein-discovery-card, .summer-topic-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .video-card:hover, .einstein-discovery-card:hover, .summer-topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .hat-icon {
+            border: 4px solid transparent;
+            transition: all 0.3s ease-in-out;
+        }
+        .hat-icon.active {
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        #hat-details-card, #einstein-details-card, #summer-details-card {
+            transition: all 0.5s ease-in-out;
+            min-height: 380px;
+        }
+        .hat-icon-shape {
+            width: 80px;
+            height: 50px;
+            border-radius: 50% 50% 0 0;
+            position: relative;
+            margin: 0 auto 10px;
+        }
+        .hat-icon-shape::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -15px;
+            right: -15px;
+            height: 15px;
+            background-color: inherit;
+            border-radius: 5px;
+        }
+        .responsive-iframe-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+        .responsive-iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
 
-<!--
-**Awafi-8/Awafi-8** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-6 shadow-lg rounded-b-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-4xl font-extrabold tracking-tight">
+                <!-- Channel link in header -->
+                <a href="https://youtube.com/channel/UCPrugwZySCFSJavbJdLkLHg?si=6py7uce8wy3-zIJg" target="_blank" class="hover:text-blue-200 transition duration-300">قناة عوافي</a>
+            </h1>
+            <nav>
+                <button id="homeButton" class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-2 px-6 rounded-full shadow-md transform hover:scale-105 transition duration-300 ease-in-out hidden">
+                    الرئيسية
+                </button>
+            </nav>
+        </div>
+    </header>
 
-Here are some ideas to get you started:
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto p-8">
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+        <!-- Video List View (Homepage) -->
+        <section id="video-list-view" class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">استكشف فيديوهاتنا التعليمية</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-8">
+                هنا تجدون مجموعة من الفيديوهات التعليمية والثقافية التي تقدمها قناة "عوافي". انقر على أي فيديو لمعرفة المزيد واستكشاف محتواه التفاعلي.
+            </p>
+            <div id="videos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Video cards will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Video Detail View (Initially Hidden) -->
+        <section id="video-detail-view" class="hidden">
+            <button id="backButton" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full mb-6 shadow-md transform hover:scale-105 transition duration-300 ease-in-out">
+                ← العودة للفيديوهات
+            </button>
+            <div id="video-content-area" class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h3 id="video-detail-title" class="text-3xl font-bold text-gray-800 mb-4 text-center"></h3>
+                <div id="video-embed-container" class="responsive-iframe-container mb-6">
+                    <!-- YouTube iframe will be inserted here -->
+                </div>
+                <p id="video-detail-description" class="text-lg text-gray-700 leading-relaxed mb-6"></p>
+
+                <!-- Placeholder for specific interactive content (e.g., Six Hats) -->
+                <div id="hats-interactive-content" class="hidden">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">تطبيق قبعات التفكير الست التفاعلي</h4>
+                    <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
+                        هذا هو التطبيق التفاعلي لقبعات التفكير الست. اضغط على أي قبعة لاستكشاف طريقة التفكير التي تمثلها.
+                    </p>
+                    <div id="hats-selector-detail" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
+                        <!-- Hat icons will be generated by JS -->
+                    </div>
+                    <div id="hat-details-display">
+                        <div id="hat-details-card-detail" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                            <div id="initial-message-detail">
+                                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3.5m0 0V11"></path></svg>
+                                <h3 class="text-2xl font-semibold text-gray-700">اختر قبعة لتبدأ</h3>
+                                <p class="text-gray-500 mt-2">اضغط على إحدى القبعات في الأعلى لعرض تفاصيلها هنا.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Einstein Interactive Content -->
+                <div id="einstein-interactive-content" class="hidden">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">اكتشافات آينشتاين</h4>
+                    <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
+                        استكشف أبرز نظريات واكتشافات ألبرت آينشتاين التي غيرت فهمنا للكون، بالإضافة إلى بعض التحديات التي واجهها.
+                    </p>
+                    <div id="einstein-discoveries-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Einstein discovery cards will be generated by JS -->
+                    </div>
+                    <div id="einstein-details-display">
+                        <div id="einstein-details-card" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                            <div id="einstein-initial-message">
+                                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                                <h3 class="text-2xl font-semibold text-gray-700">اختر اكتشافاً لتبدأ</h3>
+                                <p class="text-gray-500 mt-2">اضغط على أحد الاكتشافات في الأعلى لعرض تفاصيله هنا.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Einstein Challenges Section -->
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md mt-12 text-center">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">التحديات والإخفاقات</h4>
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            رغم أن آينشتاين صار رمزاً للذكاء، فشل كتير مرات بحياته. أول مرة كان بأول امتحان دخول له على الجامعة، واللي سقط فيه. وكمان بعد ما تخرج، ما لقى وظيفة بالجامعة كأستاذ لسنوات، وكان عم يشتغل موظف عادي بمكتب براءات الاختراع. وكان عنده أخطاء علمية كبيرة، مثل رفضه لفكرة الثقوب السوداء اللي تأكدت صحتها بعدين.
+                        </p>
+                        <blockquote class="border-r-4 border-gray-400 pr-4 italic text-lg text-gray-600">
+                            "النجاح هو القدرة على الانتقال من فشل إلى آخر من دون فقدان الحماسة."
+                        </blockquote>
+                    </div>
+                </div>
+
+                <!-- Summer Vacation Interactive Content -->
+                <div id="summer-interactive-content" class="hidden">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">العطلة الصيفية: استثمر وقتك بذكاء</h4>
+                    <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
+                        بعد شهور من الدراسة، حان وقت العطلة الصيفية! لكن كيف نستثمرها صح؟ استكشف أهم النصائح لتجعل صيفك مليئاً بالمتعة والفائدة.
+                    </p>
+                    <div id="summer-topics-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Summer topic cards will be generated by JS -->
+                    </div>
+                    <div id="summer-details-display">
+                        <div id="summer-details-card" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                            <div id="summer-initial-message">
+                                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.003-9.603l-.707-.707M10.707 3.707l.707.707M3.707 10.707l.707.707M3.707 3.707l.707.707M17.293 17.293l.707.707M17.293 3.707l.707-.707M3.707 17.293l.707-.707M20.293 3.707l.707.707M20.293 17.293l.707-.707M12 12a4 4 0 110-8 4 4 0 010 8z"></path></svg>
+                                <h3 class="text-2xl font-semibold text-gray-700">اختر موضوعاً لتبدأ</h3>
+                                <p class="text-gray-500 mt-2">اضغط على أحد المواضيع في الأعلى لاستكشاف نصائح العطلة الصيفية.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md mt-12 text-center">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">اختتام الصيفية</h4>
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            عندما تعتمد هذه الطرق، تخلص الصيفية وعندك شعور بالثقة بالنفس للسنة الجاي، وبتحس كمان إنه هالصيفية ما راحت هيك عالفاضي.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white p-6 mt-12 rounded-t-lg">
+        <div class="container mx-auto text-center text-sm">
+            <p>© 2025 <a href="https://youtube.com/channel/UCPrugwZySCFSJavbJdLkLHg?si=6py7uce8wy3-zIJg" target="_blank" class="hover:text-gray-300 transition duration-300">قناة عوافي</a>. جميع الحقوق محفوظة.</p>
+            <p class="mt-2">
+                <a href="#" class="hover:text-gray-300 transition duration-300">سياسة الخصوصية</a> |
+                <a href="#" class="hover:text-gray-300 transition duration-300">شروط الاستخدام</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const videosData = [
+            {
+                id: 'six-hats',
+                title: 'قبعات التفكير الست',
+                thumbnail: '7204037d-c50f-470b-b425-dd8223682325.png',
+                description: 'استكشف مفهوم قبعات التفكير الست لإدوارد دي بونو من خلال هذا الفيديو التفاعلي الذي يقدم كل قبعة وشخصيتها وأسلوب تفكيرها.',
+                youtubeId: 'YOUR_SIX_HATS_VIDEO_ID', // Replace with actual YouTube ID if available
+                interactive: true
+            },
+            {
+                id: 'physics-energy',
+                title: 'مقدمة في الفيزياء والطاقة',
+                thumbnail: 'https://placehold.co/480x270/ADD8E6/000000?text=الفيزياء+والطاقة',
+                description: 'تعرف على أساسيات الفيزياء والطاقة، بما في ذلك مفاهيم السرعة، الزمن، الضوء، والكهرباء بطريقة مبسطة وممتعة.',
+                youtubeId: 'AwafiTheMoon_997.mp4', // Placeholder, replace with actual YouTube ID if uploaded
+                interactive: true // This video will trigger the Einstein interactive content
+            },
+            {
+                id: 'summer-vacation',
+                title: 'العطلة الصيفية: استثمر وقتك بذكاء',
+                thumbnail: 'https://placehold.co/480x270/FFD700/000000?text=العطلة+الصيفية', // Placeholder, replace with actual thumbnail if available
+                description: 'كيف تقضي عطلتك الصيفية بفعالية؟ اكتشف نصائح للراحة، تطوير الذات، والتحضير للعام القادم.',
+                youtubeId: 'InShot_20250628_144918648.mp4', // Placeholder, replace with actual YouTube ID if uploaded
+                interactive: true // This video will trigger the Summer interactive content
+            }
+        ];
+
+        const hatsInteractiveData = {
+            red: {
+                name: 'القبعة الحمراء',
+                character: 'ذات القبعة الحمراء',
+                color: '#ef4444',
+                textColor: 'text-white',
+                description: 'تمثل العواطف والمشاعر والحدس دون الحاجة إلى تبرير. هي قبعة "أحب وأكره".',
+                quote: 'أكيد أنا أحق بالكنزة لأني أحبها أكثر من إعصار.'
+            },
+            black: {
+                name: 'القبعة السوداء',
+                character: 'إعصار',
+                color: '#1f2937',
+                textColor: 'text-white',
+                description: 'قبعة الحذر والنقد والتشاؤم. تركز على المخاطر والسلبيات المحتملة ونقاط الضعف.',
+                quote: 'أنا لا أريد الكنزة، ولكن لا يمكن أن أتركها تأخذها لأنها ستتمزق بمجرد أن ترتديها.'
+            },
+            yellow: {
+                name: 'القبعة الصفراء',
+                character: 'ضياء',
+                color: '#facc15',
+                textColor: 'text-gray-800',
+                description: 'قبعة التفاؤل والإيجابية والفرص. تبحث عن الفوائد والقيمة في كل فكرة.',
+                quote: 'برأيي يجب أن يحصل كل واحد منهما على كنزة. لِمَ كل هذا التشاؤم؟ شعاري هو "تفاءلوا بالخير تجدوه".'
+            },
+            white: {
+                name: 'القبعة البيضاء',
+                character: 'كتاب',
+                color: '#e5e7eb',
+                textColor: 'text-gray-800',
+                description: 'تركز على الحقائق الموضوعية والأرقام والمعلومات المتاحة. إنها حيادية ودقيقة.',
+                quote: 'لم يقدم أي طرف حجة مقنعة. يجب علينا حل هذه المعادلة (3x+2y=15) للوصول إلى حل منطقي.'
+            },
+            green: {
+                name: 'القبعة الخضراء',
+                character: 'فكرة / شعلة',
+                color: '#22c55e',
+                textColor: 'text-white',
+                description: 'قبعة الإبداع والأفكار الجديدة والبدائل. تبحث عن حلول مبتكرة خارج الصندوق.',
+                quote: 'ماذا لو صممنا كنزة جديدة؟ أو ربما نستخدمها لغرض آخر تمامًا؟ الأفق مفتوح!'
+            },
+            blue: {
+                name: 'القبعة الزرقاء',
+                character: 'قبطان',
+                color: '#3b82f6',
+                textColor: 'text-white',
+                description: 'قبعة التحكم والقيادة وتنظيم عملية التفكير. هي التي تدير الحوار وتلخص النتائج.',
+                quote: 'يجب أن نوكل شخصًا لحل هذه المشكلة. ضياء، لديك 10 دقائق لإنهاء هذا الأمر.'
+            }
+        };
+
+        const einsteinInteractiveData = {
+            specialRelativity: {
+                title: 'النسبية الخاصة',
+                year: '1905',
+                color: '#4CAF50', // Green
+                description: 'تخيل أنك بقطار عم يتحرك بسرعة الضوء ورفيقك واقف على الأرض حدك. ساعة إيدك عقاربها حتحركوا أبطأ من تبعول رفيقك. لأنه حسب آينشتاين الزمن بتباطأ مع السرعة. ولو أنت ركضت بسرعة قريبة من الضوء، حتبين أخف وزناً وأقل عمراً.'
+            },
+            generalRelativity: {
+                title: 'النسبية العامة',
+                year: '1915',
+                color: '#2196F3', // Blue
+                description: 'تخيل إنو الكون هو هيدي القماشة. والأشيا الثقيلة اللي فيه مثل الشمس، بتعمل متل حفرة فيها. فالكواكب بتصير تدور حول الشمس، لأنه عم تبرم حول هالحفرة يعني عم تنزل فيها كأنه.'
+            },
+            photoelectricEffect: {
+                title: 'التأثير الكهروضوئي',
+                year: 'اكتشفه عام 1905',
+                color: '#FFC107', // Yellow
+                description: 'اكتشف فيه أن الضوء مش بس موجات مثل المي أو الصوت، بل هو في جواته حبات طاقة صغيرة اسمها فوتونات. لما تضرب هالفوتونات بمعدن، حيتنافروا الإلكترونات اللي فيه. وهذا الاكتشاف أدى بعدين لنقدر نكتشف الألواح الشمسية.'
+            }
+        };
+
+        const summerInteractiveData = {
+            rest: {
+                title: 'الراحة والاستجمام',
+                icon: '😴', // Sleep emoji
+                color: '#81C784', // Light Green
+                description: 'الراحة مش بس نقعد قدام الشاشة. لازم نخصص وقت للرياضة، للقراءة، للظهرة مع الرفقة.'
+            },
+            selfImprovement: {
+                title: 'تطوير الذات والمهارات',
+                icon: '💪', // Flexed biceps emoji
+                color: '#FFD54F', // Amber
+                description: 'لازم نرسم جدول من خانتين: نقاط القوة ونقاط الضعف. وبعدين بدنا نصير نخصص وقت لنقوي الأشيا الضعيفة عنا، مثلاً لو عندك مشكلة مع الفرنسي، حط له ساعتين بالاسبوع. وبهالساعتين تحضر فيديو بالفرنسي، بتحل أسئلة على نص. ونفس الشي رياضيات. استثمر هيدي الصيفية عشان تنمي مهارة عندك مثل الزراعة، الرسم، البرمجة.'
+            },
+            preparation: {
+                title: 'التحضير للعام الدراسي',
+                icon: '📚', // Books emoji
+                color: '#64B5F6', // Light Blue
+                description: 'قبل ما تبلش المدرسة بأسبوعين، بلش تصفح الكتب ولو كنت بس عم تتفرج على الصور. عشان تاخد فكرة عن المحاور اللي حتتعلمها السنة اللي بعدها.'
+            }
+        };
+
+        const videoListView = document.getElementById('video-list-view');
+        const videoDetailView = document.getElementById('video-detail-view');
+        const videosGrid = document.getElementById('videos-grid');
+        const backButton = document.getElementById('backButton');
+        const homeButton = document.getElementById('homeButton');
+
+        const videoDetailTitle = document.getElementById('video-detail-title');
+        const videoEmbedContainer = document.getElementById('video-embed-container');
+        const videoDetailDescription = document.getElementById('video-detail-description');
+        const hatsInteractiveContent = document.getElementById('hats-interactive-content');
+        const einsteinInteractiveContent = document.getElementById('einstein-interactive-content');
+        const summerInteractiveContent = document.getElementById('summer-interactive-content');
+
+        function renderVideoList() {
+            videosGrid.innerHTML = '';
+            videosData.forEach(video => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer';
+                videoCard.dataset.videoId = video.id;
+                videoCard.innerHTML = `
+                    <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">${video.title}</h3>
+                        <p class="text-gray-600 text-sm">${video.description.substring(0, 100)}...</p>
+                        <button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full text-sm shadow-md transform hover:scale-105 transition duration-300 ease-in-out w-full">
+                            مشاهدة التفاصيل
+                        </button>
+                    </div>
+                `;
+                videosGrid.appendChild(videoCard);
+            });
+        }
+
+        function showVideoDetails(videoId) {
+            const video = videosData.find(v => v.id === videoId);
+            if (!video) return;
+
+            videoListView.classList.add('hidden');
+            videoDetailView.classList.remove('hidden');
+            homeButton.classList.remove('hidden');
+
+            videoDetailTitle.textContent = video.title;
+            videoDetailDescription.textContent = video.description;
+
+            // Hide all interactive content sections first
+            hatsInteractiveContent.classList.add('hidden');
+            einsteinInteractiveContent.classList.add('hidden');
+            summerInteractiveContent.classList.add('hidden');
+            videoEmbedContainer.classList.add('hidden'); // Hide embed by default
+
+            if (video.interactive) {
+                if (video.id === 'six-hats') {
+                    hatsInteractiveContent.classList.remove('hidden');
+                    initializeHatsInteractive();
+                } else if (video.id === 'physics-energy') {
+                    einsteinInteractiveContent.classList.remove('hidden');
+                    initializeEinsteinInteractive();
+                } else if (video.id === 'summer-vacation') {
+                    summerInteractiveContent.classList.remove('hidden');
+                    initializeSummerInteractive();
+                }
+            } else if (video.youtubeId) {
+                // Only show embed if it's a non-interactive YouTube video
+                videoEmbedContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${video.youtubeId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>`;
+                videoEmbedContainer.classList.remove('hidden');
+            }
+        }
+
+        function showHomeView() {
+            videoListView.classList.remove('hidden');
+            videoDetailView.classList.add('hidden');
+            homeButton.classList.add('hidden');
+            
+            // Reset interactive content states
+            document.querySelectorAll('.hat-icon').forEach(icon => {
+                icon.classList.remove('active');
+                icon.style.borderColor = 'transparent';
+            });
+            const hatDetailsCard = document.getElementById('hat-details-card-detail');
+            if (hatDetailsCard) {
+                hatDetailsCard.style.backgroundColor = '#f8f9fa';
+                hatDetailsCard.innerHTML = `
+                    <div id="initial-message-detail">
+                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3.5m0 0V11"></path></svg>
+                        <h3 class="text-2xl font-semibold text-gray-700">اختر قبعة لتبدأ</h3>
+                        <p class="text-gray-500 mt-2">اضغط على إحدى القبعات في الأعلى لعرض تفاصيلها هنا.</p>
+                    </div>
+                `;
+            }
+
+            const einsteinDetailsCard = document.getElementById('einstein-details-card');
+            if (einsteinDetailsCard) {
+                einsteinDetailsCard.style.backgroundColor = '#f8f9fa';
+                einsteinDetailsCard.innerHTML = `
+                    <div id="einstein-initial-message">
+                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                        <h3 class="text-2xl font-semibold text-gray-700">اختر اكتشافاً لتبدأ</h3>
+                        <p class="text-gray-500 mt-2">اضغط على أحد الاكتشافات في الأعلى لعرض تفاصيله هنا.</p>
+                    </div>
+                `;
+                document.querySelectorAll('.einstein-discovery-card').forEach(card => {
+                    card.classList.remove('active');
+                    card.style.borderColor = 'transparent';
+                });
+            }
+
+            const summerDetailsCard = document.getElementById('summer-details-card');
+            if (summerDetailsCard) {
+                summerDetailsCard.style.backgroundColor = '#f8f9fa';
+                summerDetailsCard.innerHTML = `
+                    <div id="summer-initial-message">
+                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.003-9.603l-.707-.707M10.707 3.707l.707.707M3.707 10.707l.707.707M3.707 3.707l.707.707M17.293 17.293l.707.707M17.293 3.707l.707-.707M3.707 17.293l.707-.707M20.293 3.707l.707.707M20.293 17.293l.707-.707M12 12a4 4 0 110-8 4 4 0 010 8z"></path></svg>
+                        <h3 class="text-2xl font-semibold text-gray-700">اختر موضوعاً لتبدأ</h3>
+                        <p class="text-gray-500 mt-2">اضغط على أحد المواضيع في الأعلى لاستكشاف نصائح العطلة الصيفية.</p>
+                    </div>
+                `;
+                document.querySelectorAll('.summer-topic-card').forEach(card => {
+                    card.classList.remove('active');
+                    card.style.borderColor = 'transparent';
+                });
+            }
+        }
+
+        function initializeHatsInteractive() {
+            const selectorContainer = document.getElementById('hats-selector-detail');
+            const detailsCard = document.getElementById('hat-details-card-detail');
+
+            selectorContainer.innerHTML = ''; // Clear previous hats if re-initializing
+
+            Object.keys(hatsInteractiveData).forEach(key => {
+                const hat = hatsInteractiveData[key];
+                const hatElement = document.createElement('div');
+                hatElement.className = `hat-icon cursor-pointer p-4 bg-white rounded-lg shadow-md hover:shadow-lg text-center`;
+                hatElement.dataset.hat = key;
+                hatElement.innerHTML = `
+                    <div class="hat-icon-shape" style="background-color: ${hat.color};"></div>
+                    <h3 class="text-lg font-bold ${hat.textColor === 'text-white' ? 'text-gray-800' : 'text-gray-800'}">${hat.name}</h3>
+                `;
+                selectorContainer.appendChild(hatElement);
+            });
+            
+            const oldListener = selectorContainer._eventListener;
+            if (oldListener) {
+                selectorContainer.removeEventListener('click', oldListener);
+            }
+
+            const newListener = function(e) {
+                const hatElement = e.target.closest('.hat-icon');
+                if (hatElement) {
+                    const hatKey = hatElement.dataset.hat;
+                    updateHatInfo(hatKey);
+
+                    document.querySelectorAll('#hats-selector-detail .hat-icon').forEach(icon => {
+                        icon.classList.remove('active');
+                        icon.style.borderColor = 'transparent';
+                    });
+                    hatElement.classList.add('active');
+                    hatElement.style.borderColor = hatsInteractiveData[hatKey].color;
+                }
+            };
+            selectorContainer.addEventListener('click', newListener);
+            selectorContainer._eventListener = newListener;
+
+            function updateHatInfo(hatKey) {
+                const hat = hatsInteractiveData[hatKey];
+                
+                detailsCard.style.backgroundColor = hat.color;
+                detailsCard.style.opacity = '0';
+
+                setTimeout(() => {
+                    detailsCard.innerHTML = `
+                        <h3 class="text-3xl font-bold ${hat.textColor}">${hat.name}</h3>
+                        <p class="text-lg ${hat.textColor} opacity-80 mb-4">الشخصية: ${hat.character}</p>
+                        <p class="text-xl ${hat.textColor} max-w-xl mx-auto leading-relaxed mb-6">${hat.description}</p>
+                        <blockquote class="border-r-4 ${hat.textColor} border-opacity-50 pr-4 italic text-lg ${hat.textColor} opacity-90">
+                            "${hat.quote}"
+                        </blockquote>
+                    `;
+                    detailsCard.style.opacity = '1';
+                }, 250);
+            }
+        }
+
+        function initializeEinsteinInteractive() {
+            const selectorContainer = document.getElementById('einstein-discoveries-selector');
+            const detailsCard = document.getElementById('einstein-details-card');
+
+            selectorContainer.innerHTML = ''; // Clear previous cards if re-initializing
+
+            Object.keys(einsteinInteractiveData).forEach(key => {
+                const discovery = einsteinInteractiveData[key];
+                const discoveryCard = document.createElement('div');
+                discoveryCard.className = `einstein-discovery-card cursor-pointer p-4 bg-white rounded-lg shadow-md hover:shadow-lg text-center`;
+                discoveryCard.dataset.discovery = key;
+                discoveryCard.innerHTML = `
+                    <div class="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center" style="background-color: ${discovery.color};">
+                        <span class="text-white text-3xl font-bold">${discovery.year.substring(2)}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">${discovery.title}</h3>
+                    <p class="text-gray-600 text-sm">${discovery.year}</p>
+                `;
+                selectorContainer.appendChild(discoveryCard);
+            });
+
+            const oldListener = selectorContainer._einsteinEventListener;
+            if (oldListener) {
+                selectorContainer.removeEventListener('click', oldListener);
+            }
+
+            const newListener = function(e) {
+                const discoveryCard = e.target.closest('.einstein-discovery-card');
+                if (discoveryCard) {
+                    const discoveryKey = discoveryCard.dataset.discovery;
+                    updateEinsteinInfo(discoveryKey);
+
+                    document.querySelectorAll('#einstein-discoveries-selector .einstein-discovery-card').forEach(card => {
+                        card.classList.remove('active');
+                        card.style.borderColor = 'transparent';
+                    });
+                    discoveryCard.classList.add('active');
+                    discoveryCard.style.borderColor = einsteinInteractiveData[discoveryKey].color;
+                }
+            };
+            selectorContainer.addEventListener('click', newListener);
+            selectorContainer._einsteinEventListener = newListener;
+
+            function updateEinsteinInfo(discoveryKey) {
+                const discovery = einsteinInteractiveData[discoveryKey];
+                
+                detailsCard.style.backgroundColor = discovery.color;
+                detailsCard.style.opacity = '0';
+                detailsCard.style.color = 'white'; // Default text color for dark backgrounds
+
+                const hexToRgb = hex => {
+                    const r = parseInt(hex.slice(1, 3), 16);
+                    const g = parseInt(hex.slice(3, 5), 16);
+                    const b = parseInt(hex.slice(5, 7), 16);
+                    return { r, g, b };
+                };
+
+                const calculateLuminance = ({ r, g, b }) => {
+                    const a = [r, g, b].map(v => {
+                        v /= 255;
+                        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                    });
+                    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+                };
+
+                const isLight = colorHex => {
+                    const luminance = calculateLuminance(hexToRgb(colorHex));
+                    return luminance > 0.5; // Threshold for light vs. dark
+                };
+
+                if (isLight(discovery.color)) {
+                    detailsCard.style.color = '#333'; // Dark text for light backgrounds
+                } else {
+                    detailsCard.style.color = 'white'; // Light text for dark backgrounds
+                }
+
+                setTimeout(() => {
+                    detailsCard.innerHTML = `
+                        <h3 class="text-3xl font-bold mb-2">${discovery.title}</h3>
+                        <p class="text-lg opacity-80 mb-4">${discovery.year}</p>
+                        <p class="text-xl max-w-xl mx-auto leading-relaxed">${discovery.description}</p>
+                    `;
+                    detailsCard.style.opacity = '1';
+                }, 250);
+            }
+        }
+
+        function initializeSummerInteractive() {
+            const selectorContainer = document.getElementById('summer-topics-selector');
+            const detailsCard = document.getElementById('summer-details-card');
+
+            selectorContainer.innerHTML = ''; // Clear previous cards if re-initializing
+
+            Object.keys(summerInteractiveData).forEach(key => {
+                const topic = summerInteractiveData[key];
+                const topicCard = document.createElement('div');
+                topicCard.className = `summer-topic-card cursor-pointer p-4 bg-white rounded-lg shadow-md hover:shadow-lg text-center`;
+                topicCard.dataset.topic = key;
+                topicCard.innerHTML = `
+                    <div class="text-5xl mb-3">${topic.icon}</div>
+                    <h3 class="text-lg font-bold text-gray-800">${topic.title}</h3>
+                `;
+                selectorContainer.appendChild(topicCard);
+            });
+
+            const oldListener = selectorContainer._summerEventListener;
+            if (oldListener) {
+                selectorContainer.removeEventListener('click', oldListener);
+            }
+
+            const newListener = function(e) {
+                const topicCard = e.target.closest('.summer-topic-card');
+                if (topicCard) {
+                    const topicKey = topicCard.dataset.topic;
+                    updateSummerInfo(topicKey);
+
+                    document.querySelectorAll('#summer-topics-selector .summer-topic-card').forEach(card => {
+                        card.classList.remove('active');
+                        card.style.borderColor = 'transparent';
+                    });
+                    topicCard.classList.add('active');
+                    topicCard.style.borderColor = summerInteractiveData[topicKey].color;
+                }
+            };
+            selectorContainer.addEventListener('click', newListener);
+            selectorContainer._summerEventListener = newListener;
+
+            function updateSummerInfo(topicKey) {
+                const topic = summerInteractiveData[topicKey];
+                
+                detailsCard.style.backgroundColor = topic.color;
+                detailsCard.style.opacity = '0';
+                detailsCard.style.color = 'white'; // Default text color for dark backgrounds
+
+                const hexToRgb = hex => {
+                    const r = parseInt(hex.slice(1, 3), 16);
+                    const g = parseInt(hex.slice(3, 5), 16);
+                    const b = parseInt(hex.slice(5, 7), 16);
+                    return { r, g, b };
+                };
+
+                const calculateLuminance = ({ r, g, b }) => {
+                    const a = [r, g, b].map(v => {
+                        v /= 255;
+                        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                    });
+                    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+                };
+
+                const isLight = colorHex => {
+                    const luminance = calculateLuminance(hexToRgb(colorHex));
+                    return luminance > 0.5; // Threshold for light vs. dark
+                };
+
+                if (isLight(topic.color)) {
+                    detailsCard.style.color = '#333'; // Dark text for light backgrounds
+                } else {
+                    detailsCard.style.color = 'white'; // Light text for dark backgrounds
+                }
+
+                setTimeout(() => {
+                    detailsCard.innerHTML = `
+                        <h3 class="text-3xl font-bold mb-2">${topic.title}</h3>
+                        <p class="text-xl max-w-xl mx-auto leading-relaxed">${topic.description}</p>
+                    `;
+                    detailsCard.style.opacity = '1';
+                }, 250);
+            }
+        }
+
+        // Initial render and event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVideoList();
+
+            videosGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.video-card');
+                if (card && card.dataset.videoId) {
+                    showVideoDetails(card.dataset.videoId);
+                }
+            });
+
+            backButton.addEventListener('click', showHomeView);
+            homeButton.addEventListener('click', showHomeView);
+        });
+    </script>
+</body>
+</html>
