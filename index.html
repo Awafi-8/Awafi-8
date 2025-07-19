@@ -385,12 +385,12 @@
                 correctAnswer: 'كمية الزمن المحسوبة'
             },
             {
-                question: 'أي من الكلمات التالية تعد مرادفًا لكلمة "الردح"؟',
+                question: 'أي من الكلمات التالية تعتبر مرادفاً لكلمة "الردح"؟',
                 options: ['البرهة', 'العصر', 'الدهر', 'كل ما سبق'],
                 correctAnswer: 'كل ما سبق'
             },
             {
-                question: 'ما هو اللفظ الذي يستخدم عادةً للتعبير عن جزء قصير جدًا من الزمن؟',
+                question: 'ما هو اللفظ الذي يستخدم عادةً للتعبير عن جزء قصير جداً من الزمن؟',
                 options: ['الأوان', 'الفترة', 'اللحظة', 'الساعة'],
                 correctAnswer: 'اللحظة'
             },
@@ -530,7 +530,7 @@
 
             const einsteinDetailsCard = document.getElementById('einstein-details-card');
             if (einsteinDetailsCard) {
-                einsteinDetailsCard.style.backgroundColor = '#f8f9fa';
+                einsteinDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset to default background
                 einsteinDetailsCard.innerHTML = `
                     <div id="einstein-initial-message">
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
@@ -546,7 +546,7 @@
 
             const summerDetailsCard = document.getElementById('summer-details-card');
             if (summerDetailsCard) {
-                summerDetailsCard.style.backgroundColor = '#f8f9fa';
+                summerDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset to default background
                 summerDetailsCard.innerHTML = `
                     <div id="summer-initial-message">
                         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m8.003-9.603l-.707-.707M10.707 3.707l.707.707M3.707 10.707l.707.707M3.707 3.707l.707.707M17.293 17.293l.707.707M17.293 3.707l.707-.707M3.707 17.293l.707-.707M20.293 3.707l.707.707M20.293 17.293l.707-.707M12 12a4 4 0 110-8 4 4 0 010 8z"></path></svg>
@@ -647,11 +647,18 @@
                     selectedCard.style.borderColor = einsteinInteractiveData[selectedCard.dataset.discovery].color;
 
                     const discovery = einsteinInteractiveData[selectedCard.dataset.discovery];
-                    einsteinDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset background
-                    einsteinDetailsCard.innerHTML = `
-                        <h4 class="text-3xl font-bold text-gray-800 mb-4">${discovery.title} (${discovery.year})</h4>
-                        <p class="text-lg text-gray-700 leading-relaxed">${discovery.description}</p>
-                    `;
+                    einsteinDetailsCard.style.backgroundColor = discovery.color; // Apply the color
+                    einsteinDetailsCard.style.opacity = '0'; // Start fade out
+
+                    setTimeout(() => {
+                        // Determine text color based on background color for readability
+                        const textColor = (discovery.color === '#FFC107') ? 'text-gray-800' : 'text-white'; // Yellow is light, use dark text. Others are dark, use white text.
+                        einsteinDetailsCard.innerHTML = `
+                            <h4 class="text-3xl font-bold ${textColor} mb-4">${discovery.title} (${discovery.year})</h4>
+                            <p class="text-lg ${textColor} leading-relaxed">${discovery.description}</p>
+                        `;
+                        einsteinDetailsCard.style.opacity = '1'; // Fade in
+                    }, 100);
                 }
             });
         }
@@ -685,11 +692,18 @@
                     selectedCard.style.borderColor = summerInteractiveData[selectedCard.dataset.topic].color;
 
                     const topic = summerInteractiveData[selectedCard.dataset.topic];
-                    summerDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset background
-                    summerDetailsCard.innerHTML = `
-                        <h4 class="text-3xl font-bold text-gray-800 mb-4">${topic.title}</h4>
-                        <p class="text-lg text-gray-700 leading-relaxed">${topic.description}</p>
-                    `;
+                    summerDetailsCard.style.backgroundColor = topic.color; // Apply the color
+                    summerDetailsCard.style.opacity = '0'; // Start fade out
+
+                    setTimeout(() => {
+                        // All summer colors are light, so text-gray-800 is fine.
+                        summerDetailsCard.innerHTML = `
+                            <h4 class="text-3xl font-bold text-gray-800 mb-4">${topic.title}</h4>
+                            <p class="text-5xl mb-4">${topic.icon}</p>
+                            <p class="text-lg text-gray-700 leading-relaxed">${topic.description}</p>
+                        `;
+                        summerDetailsCard.style.opacity = '1'; // Fade in
+                    }, 100);
                 }
             });
         }
