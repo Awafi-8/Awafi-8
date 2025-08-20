@@ -16,10 +16,10 @@
         .container {
             max-width: 1200px;
         }
-        .video-card, .einstein-discovery-card, .summer-topic-card, .quiz-option-card {
+        .video-card, .vak-learning-style-card, .einstein-discovery-card, .summer-topic-card, .quiz-option-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .video-card:hover, .einstein-discovery-card:hover, .summer-topic-card:hover, .quiz-option-card:hover {
+        .video-card:hover, .vak-learning-style-card:hover, .einstein-discovery-card:hover, .summer-topic-card:hover, .quiz-option-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
@@ -31,7 +31,7 @@
             transform: scale(1.1);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        #hat-details-card, #einstein-details-card, #summer-details-card {
+         #vak-details-card, #hat-details-card, #einstein-details-card, #summer-details-card {
             transition: all 0.5s ease-in-out;
             min-height: 380px;
         }
@@ -132,6 +132,25 @@
                     </div>
                 <p id="video-detail-description" class="text-lg text-gray-700 leading-relaxed mb-6"></p>
 
+                
+                <div id="vak-interactive-content" class="hidden">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">أنماط التعلم VAK</h4>
+                    <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
+                        استكشف أنماط التعلم المتنوعة (بصري - سمعي - حركي) والفروقات بين المتعلمين لكل نمط.
+                    </p>
+                    <div id="vak-learning-style-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        </div>
+                    <div id="vak-details-display">
+                        <div id="vak-learning-style-card" class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                            <div id="vak-initial-message">
+                                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                                <h3 class="text-2xl font-semibold text-gray-700">اختر نمطًا لتبدأ</h3>
+                                <p class="text-gray-500 mt-2">اضغط على أحد الأنماط في الأعلى لعرض تفاصيله هنا.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div id="hats-interactive-content" class="hidden">
                     <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b-2 border-blue-400 pb-2">تطبيق قبعات التفكير الست التفاعلي</h4>
                     <p class="text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8 text-center">
@@ -229,7 +248,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                
         </section>
 
     </main>
@@ -246,6 +265,14 @@
 
     <script>
         const videosData = [
+             {
+                id: 'vak-learning-style',
+                title: 'أنماط التعلم VAK',
+                thumbnail: 'e0f26eb6-2759-4cbd-bbeb-762cdc9d5404.png',
+                description: 'تعرف على أنماط التعلم المتعددة (البصري والسمعي والحركي) بطريقة بسيطة وممتعة.',
+                youtubeId: 'YOUR_VAK_LEARNING_STYLE_VIDEO_ID', // Replace with actual YouTube ID if available
+                interactive: true
+            },
             {
                 id: 'six-hats',
                 title: 'قبعات التفكير الست',
@@ -280,6 +307,27 @@
             }
         ];
 
+         const vakInteractiveData = {
+         visual: {
+            title: 'الطريقة البصرية',
+            emoji: '👁',
+            color: '#4CAF50',
+            description: 'يُفضل المتعلم البصري رؤية المعلومات. يتذكر ما يراه بشكل أفضل من ما يسمعه، ويُفضل استخدام المخططات والصور والرسوم البيانية.'
+        },
+        auditory: {
+            title: 'الطريقة السمعية',
+            emoji: '👂',
+            color: '#2196F3',
+            description: 'يُفضل المتعلم السمعي سماع المعلومات. يتذكر ما يسمعه بشكل أفضل، ويُفضل المناقشات، المحاضرات، والتسجيلات الصوتية.'
+        },
+        kinesthetic: {
+            title: 'الطريقة الحركية',
+            emoji: '🤚',
+            color: '#FFC107',
+            description: 'يُفضل المتعلم الحركي التعلم من خلال الحركة واللمس. يتذكر ما يفعله بنفسه، ويُفضل المشاريع العملية، التجارب، والأنشطة البدنية.'
+        }
+    };
+    
         const hatsInteractiveData = {
             red: {
                 name: 'القبعة الحمراء',
@@ -346,7 +394,7 @@
             },
             photoelectricEffect: {
                 title: 'التأثير الكهروضوئي',
-                year: 'اكتشفه عام 1905',
+                year: '1905',
                 color: '#FFC107', // Yellow
                 description: 'اكتشف فيه أن الضوء مش بس موجات مثل المي أو الصوت، بل هو في جواته حبات طاقة صغيرة اسمها فوتونات. لما تضرب هالفوتونات بمعدن، حيتنافروا الإلكترونات اللي فيه. وهذا الاكتشاف أدى بعدين لنقدر نكتشف الألواح الشمسية.'
             }
@@ -411,6 +459,7 @@
         const videoDetailTitle = document.getElementById('video-detail-title');
         const videoEmbedContainer = document.getElementById('video-embed-container');
         const videoDetailDescription = document.getElementById('video-detail-description');
+        const vakInteractiveContent = document.getElementById('vak-interactive-content');
         const hatsInteractiveContent = document.getElementById('hats-interactive-content');
         const einsteinInteractiveContent = document.getElementById('einstein-interactive-content');
         const summerInteractiveContent = document.getElementById('summer-interactive-content');
@@ -461,6 +510,7 @@
             videoDetailDescription.textContent = video.description;
 
             // Hide all interactive content sections first
+            vakInteractiveContent.classList.add('hidden');
             hatsInteractiveContent.classList.add('hidden');
             einsteinInteractiveContent.classList.add('hidden');
             summerInteractiveContent.classList.add('hidden');
@@ -476,7 +526,10 @@
             videoEmbedContainer.classList.remove('flex', 'justify-center', 'items-center');
 
             if (video.interactive) {
-                if (video.id === 'six-hats') {
+                if (video.id === 'vak-learning-style') {
+                    vakInteractiveContent.classList.remove('hidden');
+                    initializeVakInteractive();
+                } else if (video.id === 'six-hats') {
                     hatsInteractiveContent.classList.remove('hidden');
                     initializeHatsInteractive();
                 } else if (video.id === 'physics-energy') {
@@ -516,6 +569,22 @@
                 icon.classList.remove('active');
                 icon.style.borderColor = 'transparent';
             });
+            const vakDetailsCard = document.getElementById('vak-learning-style-card');
+            if (vakDetailsCard) {
+                vakDetailsCard.style.backgroundColor = '#f8f9fa'; // Reset to default background
+                vakDetailsCard.innerHTML = `
+                    <div id="vak-initial-message">
+                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path></svg>
+                        <h3 class="text-2xl font-semibold text-gray-700">اختر نمطًا لتبدأ</h3>
+                        <p class="text-gray-500 mt-2">اضغط على أحد الأنماط في الأعلى لعرض تفاصيله هنا.</p>
+                    </div>
+                `;
+                document.querySelectorAll('.vak-learning-style-card').forEach(card => {
+                    card.classList.remove('active');
+                    card.style.borderColor = 'transparent';
+                });
+            }
+
             const hatDetailsCard = document.getElementById('hat-details-card-detail');
             if (hatDetailsCard) {
                 hatDetailsCard.style.backgroundColor = '#f8f9fa';
@@ -573,6 +642,52 @@
 
         backButton.addEventListener('click', showHomeView);
         homeButton.addEventListener('click', showHomeView);
+
+            // VAK Interactive Logic
+        function initializeVakInteractive() {
+            const vakSelector = document.getElementById('vak-learning-style-selector');
+            const vakDetailsCard = document.getElementById('vak-learning-style-card');
+            vakSelector.innerHTML = ''; // Clear previous content
+
+            Object.keys(vakInteractiveData).forEach(key => {
+                const learningStyle = vakInteractiveData[key];
+                const vakCard = document.createElement('div');
+                vakCard.className = `vak-learning-style-card bg-white rounded-xl shadow-md p-6 text-center cursor-pointer`;
+                vakCard.dataset.learningStyle = key;
+                vakCard.innerHTML = `
+                    <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-white" style="background-color: ${learningStyle.color};">
+                        ${learningStyle.emoji}
+                    </div>
+                    <h5 class="text-xl font-semibold text-gray-800">${learningStyle.title}</h5>
+                `;
+                vakSelector.appendChild(vakCard);
+            });
+
+            vakSelector.addEventListener('click', (event) => {
+                const selectedCard = event.target.closest('.vak-learning-style-card');
+                if (selectedCard) {
+                    document.querySelectorAll('.vak-learning-style-card').forEach(card => {
+                        card.classList.remove('active');
+                        card.style.borderColor = 'transparent';
+                    });
+                    selectedCard.classList.add('active');
+                    selectedCard.style.borderColor = vakInteractiveData[selectedCard.dataset.learningStyle].color;
+
+                    const learningStyle = vakInteractiveData[selectedCard.dataset.learningStyle];
+                    vakDetailsCard.style.backgroundColor = learningStyle.color;
+                    vakDetailsCard.style.opacity = '0';
+
+                    setTimeout(() => {
+                        const textColor = (learningStyle.color === '#FFC107') ? 'text-gray-800' : 'text-white';
+                        vakDetailsCard.innerHTML = `
+                            <h4 class="text-3xl font-bold ${textColor} mb-4">${learningStyle.title} (${learningStyle.emoji})</h4>
+                            <p class="text-lg ${textColor} leading-relaxed">${learningStyle.description}</p>
+                        `;
+                        vakDetailsCard.style.opacity = '1';
+                    }, 100);
+                }
+            });
+        }
 
         // Hats Interactive Logic
         function initializeHatsInteractive() {
@@ -787,8 +902,23 @@
         quizRestartButton.addEventListener('click', initializeQuizInteractive);
 
 
-        // Initial render
-        renderVideoList();
-    </script>
+   // Initial render when the document is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVideoList();
+        });
+     // This bracket correctly closes the showVideoDetails function
+
+    // Event Listeners
+    videosGrid.addEventListener('click', (event) => {
+        const videoCard = event.target.closest('.video-card');
+        if (videoCard) {
+            showVideoDetails(videoCard.dataset.videoId);
+        }
+    });
+
+    backButton.addEventListener('click', showHomeView);
+    homeButton.addEventListener('click', showHomeView);
+
+</script>
 </body>
 </html>
